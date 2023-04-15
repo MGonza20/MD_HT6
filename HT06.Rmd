@@ -8,14 +8,20 @@ date: "2023-04-14"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+``` {r echo=FALSE}
+library(dplyr)
+library(knitr)
+library(ipred)       # bagging
+library(caret)       # bagging
+#library(e1071)
+library(dummy)
+library(caret)
+library(fastDummies)
+```
+
 # Hoja de Trabajo 06 - Regresión Logística
 
 ## 1 - Crear una variable dicotómica por cada una de las categorías de la variable respuesta categórica que creó en hojas anteriores. Debería tener 3 variables dicotómicas.
-
-
-
-## 2 - Use los mismos conjuntos de entrenamiento y prueba que utilizó en las hojas anteriores.
-
 ```{r echo=FALSE}
 data <- read.csv("train.csv")
 ```
@@ -141,6 +147,20 @@ Columnas a utilizar (basándonos en el análisis exploratorio de la hoja anterio
 print(paste(columns_used,collapse=' '))
 ```
 
+Volviendo a usar la variable categorica
+```{r}
+clean_data$economy <- ifelse(clean_data$salePrice < 163000, "Economic", ifelse(clean_data$salePrice >= 163000 & clean_data$salePrice <= 214000, "Average", "Expensive"))
+```
+
+
+```{r}
+clean_data <- dummy_cols(clean_data, select_columns = "economy", remove_selected_columns = TRUE)
+head(clean_data)
+```
+
+
+
+## 2 - Use los mismos conjuntos de entrenamiento y prueba que utilizó en las hojas anteriores.
 Un 75% del dataset se usará para entrenar el árbol.
 ``` {r}
 set.seed(5)
