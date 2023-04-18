@@ -152,16 +152,28 @@ Volviendo a usar la variable categorica
 clean_data$economy <- ifelse(clean_data$salePrice < 163000, "Economic", ifelse(clean_data$salePrice >= 163000 & clean_data$salePrice <= 214000, "Average", "Expensive"))
 ```
 
-
 ```{r}
 clean_data <- dummy_cols(clean_data, select_columns = "economy", remove_selected_columns = TRUE)
 head(clean_data)
 ```
 
-
-
 ## 2 - Use los mismos conjuntos de entrenamiento y prueba que utilizó en las hojas anteriores.
 Un 75% del dataset se usará para entrenar el árbol.
+
+```{r}
+clean_data[!complete.cases(clean_data$salePrice), "salePrice"]<-median(clean_data$salePrice, na.rm = T)
+```
+
+```{r}
+clean_data <- na.omit(clean_data)
+```
+
+
+```{r}
+threshold <- 394950
+clean_data$pricey <- ifelse(clean_data$salePrice > threshold, 1, 0)
+```
+
 ``` {r}
 set.seed(5)
 expected_result <- clean_data$salePrice
@@ -171,3 +183,20 @@ partition <- createDataPartition(y=expected_result,
 train_set <- clean_data[partition,]
 test_set <- clean_data[-partition,]
 ```
+
+
+## 3 - Elabore un modelo de regresión logística para conocer si una vivienda es cara o no, utilizando el conjunto de entrenamiento. Use validación cruzada.
+
+```{r}
+threshold <- 394950
+clean_data$pricey <- ifelse(clean_data$salePrice > threshold, 1, 0)
+```
+
+
+```{r}
+cv_ej3 <- trainControl(method = "cv", number = 10)
+modelo_ej3 <- caret::train(pricey~., data = train_set, method = "glm", family = binomial, trControl = cv_ej3)
+summary(modelo_ej3)
+```
+
+
