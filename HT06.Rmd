@@ -13,13 +13,13 @@ library(dplyr)
 library(knitr)
 library(ipred)       # bagging
 library(caret)       # bagging
-#library(e1071)
 library(dummy)
 library(mlr)
 library(caret)
 library(fastDummies)
 library(corrplot)
-
+library(randomForest)
+library(e1071)       # naiveBayes
 ```
 
 # Hoja de Trabajo 06 - Regresión Logística
@@ -242,3 +242,17 @@ rin2 = makeResampleDesc(method = "CV", iters = 10, predict = "both")
 lrn = makeLearner("classif.multinom", predict.type = "prob", trace = FALSE)
 ```
 
+## 10 - Haga un modelo de árbol de decisión, uno de Random Forest y uno de Naive Bayes usando la misma variable respuesta y los mismos predictores que el mejor de los modelos de Regresión Logística.
+
+Random Forest
+```{r}
+modelo12 <- randomForest(pricey~.,train_set, na.action = na.omit)
+summary(modelo12)
+```
+
+Naive Bayes
+
+``` {r}
+model_naive_bayes <- naiveBayes(pricey~., data=train_set)
+summary(model_naive_bayes)
+```
