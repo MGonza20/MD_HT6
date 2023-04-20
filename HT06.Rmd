@@ -196,9 +196,9 @@ ctrlspecs <- trainControl(method="cv",
                           number=10, 
                           savePredictions="all",
                           )
-
-model1 <- train(
-  pricey ~ economy_Average + economy_Economic + economy_Expensive, data = train_set,
+model1 <- caret::train(
+  pricey ~ economy_Average + economy_Economic + economy_Expensive, 
+  data = train_set,
   method = "glm",
   family = binomial,
   trControl = ctrlspecs
@@ -222,7 +222,7 @@ Al observar esta imagen podemos ver que hay una alta correlación entre las vari
 
 ## 5 - Utilice el modelo con el conjunto de prueba y determine la eficiencia del algoritmo para clasificar
 
-```{r, warning=FALS}
+```{r, warning=FALSE}
 pred <- predict(model1, newdata = test_set[,-1])
 head(pred)
 binary_predictions <- ifelse(pred > 0.5, 1, 0)
@@ -240,7 +240,5 @@ train_set$pricey <- as.factor(train_set$pricey)
 house_task = makeClassifTask(data = train_set, target = "pricey")
 rin2 = makeResampleDesc(method = "CV", iters = 10, predict = "both")
 lrn = makeLearner("classif.multinom", predict.type = "prob", trace = FALSE)
-
-
 ```
 
